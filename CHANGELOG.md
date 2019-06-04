@@ -30,6 +30,7 @@
   * API change: deprecated waypoint's `is_intersection`, now is `is_junction`
   * API update: solve the problem of RuntimeError: std::bad_cast described here: #1125 (comment)
   * Removed deprecated code and content
+  * Added PythonAPI documentation generator
   * New recorder features:
     - Added optional parameter to show more details about a recorder file (related to `show_recorder_file_info.py`)
     - Added playback speed (slow/fast motion) for the replayer
