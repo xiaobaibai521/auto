@@ -1,3 +1,7 @@
+## Latest
+
+  * Added an option (-i) when replaying a session to ignore the hero vehicles
+
 ## CARLA 0.9.6
 
   * Upgraded to Unreal Engine 4.22
