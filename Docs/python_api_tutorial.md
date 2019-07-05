@@ -211,6 +211,7 @@ carla.VehiclePhysicsControl(
     use_gear_autobox,
     gear_switch_time,
     clutch_strength,
+
     mass,
     drag_coefficient,
     center_of_mass,
@@ -228,6 +229,9 @@ Where:
 - *use_gear_autobox*: If true, the vehicle will have automatic transmission
 - *gear_switch_time*: Switching time between gears
 - *clutch_strength*: The clutch strength of the vehicle. Measured in Kgm^2/s
+
+- *final_ratio*: The fixed ratio from transmission to wheels.
+- *forward_gears*: List of `GearPhysicsControl` objects.
 
 - *mass*: The mass of the vehicle measured in Kg
 - *drag_coefficient*: Drag coefficient of the vehicle's chassis
@@ -254,6 +258,16 @@ Where:
 - *max_handbrake_torque*: The maximum handbrake torque in Nm.
 - *position*: The position of the wheel.
 
+```py
+carla.GearPhysicsControl(
+    ratio,
+    down_ratio,
+    up_ratio)
+```
+Where:
+- *ratio*: The transmission ratio of this gear.
+- *down_ratio*: The level of RPM (in relation to MaxRPM) where the gear autobox initiates shifting down.
+- *up_ratio*: The level of RPM (in relation to MaxRPM) where the gear autobox initiates shifting up.
 
 Our vehicles also come with a handy autopilot
 
@@ -342,6 +356,43 @@ world.set_weather(carla.WeatherParameters.WetCloudySunset)
 
 The full list of presets can be found in the
 [WeatherParameters reference](python_api.md#carla.WeatherParameters).
+
+### World Snapshot
+
+A world snapshot represents the state of every actor in the simulation at a single frame, a sort of still image of the world with a timestamp. With this feature it is possible to record the location of every actor and make sure all of them were captured at the same frame without the need of using synchronous mode.
+
+```py
+# Retrieve a snapshot of the world at this point in time.
+world_snapshot = world.get_snapshot()
+
+# Wait for the next tick and retrieve the snapshot of the tick.
+world_snapshot = world.wait_for_tick()
+
+# Register a callback to get called every time we receive a new snapshot.
+world.on_tick(lambda world_snapshot: do_something(world_snapshot))
+```
+
+The world snapshot contains a timestamp and a list of actor snapshots. Actor snapshots do not allow to operate on the actor directly as they only contain data about the physical state of the actor, but you can use their id to retrieve the actual actor. And the other way around, you can look up snapshots by id (average O(1) complexity).
+
+```py
+timestamp = world_snapshot.timestamp
+timestamp.frame_count
+timestamp.elapsed_seconds
+timestamp.delta_seconds
+timestamp.platform_timestamp
+
+
+for actor_snapshot in world_snapshot:
+    actor_snapshot.get_transform()
+    actor_snapshot.get_velocity()
+    actor_snapshot.get_angular_velocity()
+    actor_snapshot.get_acceleration()
+
+    actual_actor = world.get_actor(actor_snapshot.id)
+
+
+actor_snapshot = world_snapshot.find(actual_actor.id)
+```
 
 #### Map and waypoints
 
