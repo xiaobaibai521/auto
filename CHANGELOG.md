@@ -8,6 +8,9 @@
   * Bugfix about recorder query system
   * Fixed problem when vehicles enable autopilot after a replayer, now it works better.
     - When a recorded session finish replaying, all vehicles will continue in autopilot, and all pedestrians will stop.
+  * Added pedestrian support:
+    - We can spawn pedestrians that will walk over sidewalks at random points continually.
+    - The script 'spawn_npc.py' now can spawn pedestrians with the flag '-w' and the number of pedestrians.
   * Vulkan support: Changed project settings to make vulkan default on linux and updated make script to allow user to select opengl
   * Add ability to set motion blur settings for rgb camera in sensor python blueprint
   * Improved visual quality of the screen capture for the rgb sensor
@@ -26,6 +29,8 @@
   * API extension: add `world.get_actor(id)` to find a single actor by id
   * API extension: add `carla.WeatherParameters.Default` for a default (tailor-made for each town) weather profile
   * API extension: added `WorldSnapshot` that contains a list of `ActorSnapshot`, allows capturings a "still image" of the world at a single frame
+  * API extension: `world.tick()` now synchronizes with the simulator and returns the id of the newly started frame
+  * API extension: `world.apply_settings(settings)` now synchronizes with the simulator and returns the id of the frame when the settings took effect
   * API change: Rename `frame_count` and `frame_number` as `frame`, old members are kept as deprecated
   * API change: `world.wait_for_tick()` now returns a `carla.WorldSnapshot`
   * API change: the callback of `world.on_tick(callback)` now receives a `carla.WorldSnapshot`
@@ -34,12 +39,13 @@
   * Removed deprecated code and content
   * Added PythonAPI documentation generator
   * New recorder features:
+    - Recorded system is documented, and binary file system is described.
     - Added optional parameter to show more details about a recorder file (related to `show_recorder_file_info.py`)
     - Added playback speed (slow/fast motion) for the replayer
     - We can use an absolute path for the recorded files (to choose where to 'write to' or 'read from')
     - New data recorded to replay animations:
-      - Wheels of vehicles are animated (steering, throttle, handbrake), also bikes and cycles
-      - Walkers animation is simulated in playback (through speed of walker), so they walk properly.
+      + Wheels of vehicles are animated (steering, throttle, handbrake), also bikes and cycles
+      + Walkers animation is simulated in playback (through speed of walker), so they walk properly.
   * Fixed Lidar effectiveness bug in manual_control.py
   * Fixed dead-lock when loading a new map in synchronous mode
   * Fixed get_actors may produce actors without parent
@@ -61,7 +67,7 @@
   * New Vehicle Audi Etron. With 25.000 Tris and their Lods.
   * New material for Mustang. New material that will allow us to improve all the materials of the cars.
   * New custom weather for each map
-  * Improve weather - Tweak values 
+  * Improve weather - Tweak values
   * Change the weight of cars. All cars have been compared with the real to have a feedback more real.
   * Add Navigations maps for pedestrian
   * Fixed invisible wall

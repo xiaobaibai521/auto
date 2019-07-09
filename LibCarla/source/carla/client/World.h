@@ -19,6 +19,8 @@
 #include "carla/rpc/VehiclePhysicsControl.h"
 #include "carla/rpc/WeatherParameters.h"
 
+#include <optional>
+
 namespace carla {
 namespace client {
 
@@ -51,13 +53,17 @@ namespace client {
     /// can be used to spawning actor into the world.
     SharedPtr<BlueprintLibrary> GetBlueprintLibrary() const;
 
+    /// Get a random location from the pedestrians navigation mesh
+    boost::optional<geom::Location> GetRandomLocationFromNavigation() const;
+
     /// Return the spectator actor. The spectator controls the view in the
     /// simulator window.
     SharedPtr<Actor> GetSpectator() const;
 
     rpc::EpisodeSettings GetSettings() const;
 
-    void ApplySettings(const rpc::EpisodeSettings &settings);
+    /// @return The id of the frame when the settings were applied.
+    uint64_t ApplySettings(const rpc::EpisodeSettings &settings);
 
     /// Retrieve the weather parameters currently active in the world.
     rpc::WeatherParameters GetWeather() const;
@@ -102,7 +108,9 @@ namespace client {
 
     /// Signal the simulator to continue to next tick (only has effect on
     /// synchronous mode).
-    void Tick();
+    ///
+    /// @return The id of the frame that this call started.
+    uint64_t Tick();
 
     DebugHelper MakeDebugHelper() const {
       return DebugHelper{_episode};
